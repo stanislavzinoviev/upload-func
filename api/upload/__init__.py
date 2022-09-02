@@ -9,23 +9,32 @@ import json
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    req_body = req.get_json()
+    rq = req.get_json()
 
     logging.info("Handle body")
 
-    logging.info(f'{req_body}')
+    logging.info(f'{rq}')
+
 
     req_body = req.files['file']
-        
-    frame = pd.read_excel(req_body)
-    print(frame)
 
-    users = list()
-    for item in reading_list(frame):
-        print(item)
-        users.append(item)
-    res = json.dumps([o.dump() for o in users], indent=4)
-    return func.HttpResponse(res, status_code=200)
+    logging.info(f'{rq}')
+        
+    try:
+        frame = pd.read_excel(req_body)
+        print(frame)
+
+        users = list()
+        for item in reading_list(frame):
+            print(item)
+            users.append(item)
+        res = json.dumps([o.dump() for o in users], indent=4)
+        return func.HttpResponse(res, status_code=200)
+
+    finally:
+        return func.HttpResponse("error", status_code=200)
+
+    
 
 
 

@@ -1,3 +1,4 @@
+from cmath import log
 from itertools import tee
 import logging
 import pandas as pd
@@ -8,6 +9,11 @@ import json
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
+    req_body = req.get_json()
+
+    logging.info("Handle body")
+
+    logging.info(f'{req_body}')
 
     req_body = req.files['file']
         

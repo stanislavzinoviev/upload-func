@@ -22,13 +22,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         
     try:
         frame = pd.read_excel(req_body)
-        print(frame)
-
+        logging.info(frame)
+        logging.info(f'{rq}')
         users = list()
         for item in reading_list(frame):
             print(item)
             users.append(item)
         res = json.dumps([o.dump() for o in users], indent=4)
+        logging.info(rq)
         return func.HttpResponse(res, status_code=200)
 
     finally:

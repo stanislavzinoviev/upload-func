@@ -1,24 +1,45 @@
+from itertools import tee
 import logging
+import pandas as pd
 
 import azure.functions as func
-
+import json
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+    req_body = req.files['file']
+        
+    frame = pd.read_excel(req_body)
+    print(frame)
+
+    users = list()
+    for item in reading_list(frame):
+        print(item)
+        users.append(item)
+    res = json.dumps([o.dump() for o in users], indent=4)
+    return func.HttpResponse(res, status_code=200)
+
+
+
+class User:
+   def __init__(self, id, name, surname, age):
+       self.id = id
+       self.name = name
+       self.surname = surname
+       self.age = age
+
+   def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
+
+   def dump(self):
+        return {'id': self.id,
+                               'name': self.name,
+                               'surname': self.surname,
+                               'age': self.age}
+
+
+def reading_list(df:pd.DataFrame)->list:
+    return list(map(lambda x:User(x[0],x[1],x[2],x[3]),df.values.tolist()))

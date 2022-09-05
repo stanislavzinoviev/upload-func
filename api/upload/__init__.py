@@ -14,10 +14,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Handle body")
 
     logging.info(f'{req_body}')
-
-    req_body = req.files['file']
         
-    frame = pd.read_excel(req_body)
+    frame = pd.read_excel("https://upload13.blob.core.windows.net/images/Book1.xlsx")
     print(frame)
 
     users = list()
